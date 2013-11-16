@@ -49,13 +49,6 @@
 
         </div>
     </div>
-    <div class="control-group">
-        <form:label path="about" cssClass="control-label">About</form:label>
-        <div class="controls">
-            <form:textarea path="about"></form:textarea>
-            <form:errors path="about" cssClass="text-error" />
-        </div>
-    </div>
 
     <div class="control-group">
         <form:label path="about" cssClass="control-label">About</form:label>
@@ -65,14 +58,20 @@
         </div>
     </div>
     <div class="control-group">
-    <div class="controls">
-    <select name="groupId" id="select">
+       <div class="controls">
+           <c:choose>
+           <c:when test="${groups!=null&&groups.size()>0}">
+        <select name="groupId" id="select">
         <option value="-1">No Group</option>
          <c:forEach items="${groups}" var="group">
             <option value="${group.id}">${group.title}</option>
          </c:forEach>
-
     </select>
+           </c:when>
+               <c:otherwise>
+                   No available groups
+               </c:otherwise>
+           </c:choose>
     </div>
     </div>
     <div class="controls">

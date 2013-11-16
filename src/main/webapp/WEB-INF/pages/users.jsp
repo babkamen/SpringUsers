@@ -5,6 +5,7 @@
 
 <head>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css">
+ <script type="text/javascript" src="/resources/js/main.js"></script>
 </head>
 <div class="page-header">
 <h2 class="text-center">Users</h2>
@@ -14,7 +15,7 @@
                <input type="hidden" name="id" value="0"/>
 
            <table class="table table-striped table-bordered">
-               <form method="get" action="${pageContext.request.contextPath}/users/edit">
+               <form method="get" action="${pageContext.request.contextPath}/users/edit" >
 
                <thead>
 		<tr>
@@ -54,9 +55,16 @@
 		</c:forEach>
 </tbody>
 	</table>
+           <c:if test="${idError!=null}">
+           <div class="alert alert-error">
+
+               <button type="button" class="close" data-dismiss="alert">&times;</button>
+               <h4>No element is chosen!</h4>
+           </div>
+           </c:if>
            <a href="${pageContext.request.contextPath}/users/add" class="btn btn-primary">Add</a>
-           <button type="submit" class="btn btn-primary">Edit</button>
-           <button type="submit" formaction="${pageContext.request.contextPath}/users/delete" class="btn btn-primary">Delete</button>
+           <button type="submit" class="btn btn-primary" onsubmit="checkFields()">Edit</button>
+           <button type="submit" formaction="${pageContext.request.contextPath}/users/delete" class="btn btn-primary" onsubmit="checkFields()" >Delete</button>
            </form>
 
        </div>

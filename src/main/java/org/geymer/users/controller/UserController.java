@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 /**
@@ -38,38 +40,68 @@ public class UserController {
 
 
     @RequestMapping(value = "/add",method = RequestMethod.GET)
-    public String addUser(ModelMap model) {
+    public String addUser(Model model) {
         model.addAttribute("user",new User());
-        model.addAttribute("submitButton","Register");
+       prepareModel(model,"add");
         model.addAttribute("groups",userGroupService.findAll());
-        model.addAttribute("title","Add new user");
         return "userAdd";
     }
     @RequestMapping(value = "/add",method = RequestMethod.POST)
-    public String add(@Valid @ModelAttribute("user") User user,BindingResult result,@RequestParam("group")Integer groupId) {
+    public String add(@Valid @ModelAttribute("user") User user,BindingResult result,HttpServletRequest request,Model model) {
+
         if(result.hasErrors()){
+            prepareModel(model,"add");
+            model.addAttribute("groups",userGroupService.findAll());
             return "userAdd";
         }
-        if(groupId!=-1)user.setUserGroup(userGroupService.findOne(groupId));
+        String groupId=request.getParameter("group");
+         if(groupId!=null&&!groupId.equals("-1")){
+             user.setUserGroup(userGroupService.findOne(Integer.parseInt(groupId)));
+         }
         userService.save(user);
         return "redirect:/users";
     }
 
 
     @RequestMapping(value = "/delete")
-    public String addUser(@RequestParam("id") Integer id) {
-        userService.delete(id);
+    public String addUser(HttpServletRequest request,Model model) {
+        String id;
+        if ((id = request.getParameter("id")) == null) {
+            model.addAttribute("idError","");
+                                            return "forward:/users/";
+        }
+
+        userService.delete(Integer.parseInt(id));
         return "redirect:/users";
     }
 
     @RequestMapping(value = "/edit",method = RequestMethod.GET)
-    public String editUser(Model model,@RequestParam("id") Integer id) {
-        model.addAttribute("user",userService.findOne(id));
-        model.addAttribute("submitButton","Edit");
-        model.addAttribute("title","Edit user");
+    public String editUser(Model model,HttpServletRequest request) {
+        String id;
+        if ((id = request.getParameter("id")) == null) {
+            model.addAttribute("idError","");
+            return "forward:/users/";
+        }
+
+        model.addAttribute("user",userService.findOne(Integer.parseInt(id)));
+        prepareModel(model,"add");
         model.addAttribute("groups",userGroupService.findAll());
 
         return "userAdd";
     }
+
+    private void prepareModel(Model model,String pageName) {
+        if(pageName.equals("add")){
+            model.addAttribute("submitButton","Register");
+            model.addAttribute("title","Add new group");
+        }
+        if(pageName.equals("edit")){
+
+            model.addAttribute("submitButton","Edit");
+            model.addAttribute("title","Edit group");
+        }
+
+    }
+
 
 }

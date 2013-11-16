@@ -14,17 +14,6 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface UserGroupRepository extends JpaRepository<UserGroup,Integer>{
-    @Override
-    List<UserGroup> findAll(Sort sort);
-
-    @Override
-    UserGroup findOne(Integer integer);
-
-    @Override
-    UserGroup saveAndFlush(UserGroup entity);
-
-    @Override
-    void delete(Integer integer);
 
     List<UserGroup> findByTitleContaining(String name);
 }

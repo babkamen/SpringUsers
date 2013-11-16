@@ -22,7 +22,7 @@
         </form>
     </div>
     <table class="table table-striped table-bordered ">
-        <form method="get" action="${pageContext.request.contextPath}/groups/edit">
+        <form method="get" action="${pageContext.request.contextPath}/groups/edit" onsubmit="checkValues()">
 
             <thead>
 		<tr>
@@ -67,9 +67,16 @@
 		</c:forEach>
 </tbody>
 	</table>
+    <c:if test="${idError!=null}">
+        <div class="alert alert-error">
+
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <h4>No element is chosen!</h4>
+        </div>
+    </c:if>
         <a href="${pageContext.request.contextPath}/groups/add" class="btn btn-primary">Add</a>
-<button class="btn btn-primary">Edit</button>
-   <button formaction="${pageContext.request.contextPath}/groups/delete" class="btn btn-primary">Delete</button>
+<button class="btn btn-primary" >Edit</button>
+   <button formaction="${pageContext.request.contextPath}/groups/delete" class="btn btn-primary" >Delete</button>
     </form>
 </div>
 </body>

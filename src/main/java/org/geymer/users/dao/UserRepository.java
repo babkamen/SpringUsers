@@ -13,17 +13,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface UserRepository extends JpaRepository<User,Integer>{
-    @Override
-    List<User> findAll();
 
-    @Override
-    User findOne(Integer integer);
-
-    @Override
-    <S extends User> S save(S entity);
-
-    @Override
-    void delete(Integer integer);
     List<User> findByUserGroupIdIsNull();
 
 

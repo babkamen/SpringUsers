@@ -35,11 +35,18 @@
     <div class="control-group">
         <label for="userIds" class="control-label">Users</label>
         <div class="controls">
+            <c:choose>
+                <c:when test="${userIds!=null&&userIds.size()>0}">
             <select name="userIds" id="userIds" multiple>
                 <c:forEach items="${users}" var="user">
                     <option value="${user.id}">${user.name}</option>
                 </c:forEach>
             </select>
+                </c:when>
+                <c:otherwise>
+                    <p>No available users</p>
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
 
