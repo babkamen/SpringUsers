@@ -10,6 +10,7 @@
     <context:component-scan base-package="org.geymer.users"/>
     <jpa:repositories base-package="org.geymer.users.dao" />
     <context:property-placeholder location="/WEB-INF/jdbc.properties" />
+    <mvc:annotation-driven/>
     <!-- Enable @Controller annotation support -->
     <mvc:annotation-driven />
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">

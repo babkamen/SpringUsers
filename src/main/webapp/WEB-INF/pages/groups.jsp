@@ -5,7 +5,7 @@
 <html>
 
 <head>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css">
 <title>Hi ,admin</title>
 </head>
 <div class="page-header">

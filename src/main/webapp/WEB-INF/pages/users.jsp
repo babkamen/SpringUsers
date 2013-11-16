@@ -4,7 +4,7 @@
 <html>
 
 <head>
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css">
 </head>
 <div class="page-header">
 <h2 class="text-center">Users</h2>
