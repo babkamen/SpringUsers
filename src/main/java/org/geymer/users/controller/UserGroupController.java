@@ -1,4 +1,5 @@
 package org.geymer.users.controller;
+
 import org.geymer.users.entity.User;
 import org.geymer.users.entity.UserGroup;
 import org.geymer.users.service.UserGroupService;
@@ -8,13 +9,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,88 +34,115 @@ public class UserGroupController {
     @Autowired
     UserService userService;
 
-
     @RequestMapping(method = RequestMethod.GET)
-    public String userGroups(ModelMap model) {
-        model.addAttribute("userGroups",userGroupService.findAll());
+    public String userGroups(ModelMap model,HttpServletResponse response) {
+        response.setContentType("image/jpeg");
+
+        model.addAttribute("userGroups", userGroupService.findAll());
         return "groups";
     }
 
-    @RequestMapping(value = "/search",method = RequestMethod.GET)
-    public String search(@RequestParam("q") String name,Model model) {
-        model.addAttribute("userGroups",userGroupService.findByNameContaining(name));
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public String search(@RequestParam("q") String name, Model model) {
+        model.addAttribute("userGroups", userGroupService.findByNameContaining(name));
         return "groups";
     }
-    @RequestMapping(value = "/add",method = RequestMethod.GET)
+    @RequestMapping(value = "/getlogo/{groupId}", method = RequestMethod.GET)
+    @ResponseBody
+    public byte[] helloWorld(@PathVariable int groupId)  {
+        return userGroupService.findOne(groupId).getLogo();
+    }
+
+
+    @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String addUser(Model model) {
-          model.addAttribute("userGroup",new UserGroup());
-        prepareModel(model,"add");
-        model.addAttribute("users",userService.findUsersNotInGroup());
-        return "groupAdd";
+        model.addAttribute("userGroup", new UserGroup());
+        model.addAttribute("users", userService.findUsersNotInGroup());
+        return "groups/add";
     }
 
-    private void prepareModel(Model model,String pageName) {
-        if(pageName.equals("add")){
-        model.addAttribute("submitButton","Register");
-        model.addAttribute("title","Add new group");
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public String add(@Valid @ModelAttribute("userGroup") UserGroup userGroup, BindingResult result,
+                      @RequestParam(value = "logo",required = false) MultipartFile logo,HttpServletRequest request, Model model) {
+
+        if (result.hasErrors()) {
+            return "groups/add";
         }
-        if(pageName.equals("edit")){
-
-            model.addAttribute("submitButton","Edit");
-        model.addAttribute("title","Edit group");
-        }
-
-    }
-
-    @RequestMapping(value = "/add",method = RequestMethod.POST)
-    public String add(@Valid @ModelAttribute("userGroup") UserGroup userGroup,BindingResult result,HttpServletRequest request,Model model) {
-
-        if(result.hasErrors()){
-            prepareModel(model,"add");
-            return "groupAdd";
-        }
-        String[] userIds=request.getParameterValues("userIds");
-        if(userIds!=null&&userIds.length>0){
-            List<User> users=new ArrayList<User>();
-            for(String id:userIds){
+        String[] userIds = request.getParameterValues("userIds");
+        if (userIds != null && userIds.length > 0) {
+            List<User> users = new ArrayList<User>();
+            for (String id : userIds) {
                 users.add(userService.findOne(Integer.parseInt(id)));
             }
-             userGroup.setUsers(users);
+            userGroup.setUsers(users);
         }
+
+        if(logo!=null){
+            try {
+                userGroup.setLogo(logo.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
         userGroupService.save(userGroup);
         return "redirect:/groups";
     }
 
-
     @RequestMapping(value = "/delete")
-    public String addUser(HttpServletRequest request,Model model) {
+    public String addUser(HttpServletRequest request, Model model) {
         String id;
         if ((id = request.getParameter("id")) == null) {
-            model.addAttribute("idError","");
+            model.addAttribute("idError", "");
             return "forward:/groups";
         }
         userGroupService.delete(Integer.parseInt(id));
         return "redirect:/groups";
     }
 
-    @RequestMapping(value = "/edit",method = RequestMethod.GET)
-    public String editUser(Model model,HttpServletRequest request) {
+    @RequestMapping(value = "/edit", method = RequestMethod.GET)
+    public String editUser(Model model, HttpServletRequest request) {
         String id;
-        prepareModel(model,"edit");
         if ((id = request.getParameter("id")) == null) {
-            model.addAttribute("idError","");
+            model.addAttribute("idError", "");
 
             return "forward:/groups";
         }
-        model.addAttribute("userGroup",userGroupService.findOne(Integer.parseInt(id)));
-        model.addAttribute("users",userService.findAll());
+        model.addAttribute("userGroup", userGroupService.findOne(Integer.parseInt(id)));
+        model.addAttribute("users", userService.findAll());
 
-        return "groupAdd";
+        return "groups/edit";
     }
 
 
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
+    public String editPost(@Valid @ModelAttribute("userGroup") UserGroup userGroup, BindingResult result,
+                      @RequestParam(value = "logo",required = false) MultipartFile logo,HttpServletRequest request, Model model) {
+
+        if (result.hasErrors()) {
+            return "groups/edit";
+        }
+        String[] userIds = request.getParameterValues("userIds");
+        if (userIds != null && userIds.length > 0) {
+            List<User> users = new ArrayList<User>();
+            for (String id : userIds) {
+                users.add(userService.findOne(Integer.parseInt(id)));
+            }
+            userGroup.setUsers(users);
+        }
+
+        if(logo!=null){
+            try {
+                userGroup.setLogo(logo.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
 
-
+        userGroupService.save(userGroup);
+        return "redirect:/groups";
+    }
 
 }

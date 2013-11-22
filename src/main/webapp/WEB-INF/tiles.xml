@@ -1,0 +1,50 @@
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+    <definition name="template" template="/WEB-INF/tiles/template.jsp">
+        <put-attribute name="header" value="/WEB-INF/tiles/header.jsp" />
+        <put-attribute name="menu" value="/WEB-INF/tiles/menu.jsp" />
+        <put-attribute name="body" value="/WEB-INF/tiles/body.jsp" />
+        <put-attribute name="footer" value="/WEB-INF/tiles/footer.jsp" />
+    </definition>
+
+    <definition name="index" extends="template">
+        <put-attribute name="title" value="Welcome,stranger"/>
+        <put-attribute name="body" value="/WEB-INF/tiles/index.jsp"/>
+    </definition>
+
+    <definition name="groups" extends="template">
+        <put-attribute name="title" value="Groups"/>
+         <put-attribute name="body" value="/WEB-INF/tiles/groups.jsp"/>
+    </definition>
+    <definition name="users" extends="template">
+        <put-attribute name="title" value="Users"/>
+        <put-attribute name="body" value="/WEB-INF/tiles/users.jsp"/>
+    </definition>
+
+    <definition name="users/add" extends="template">
+        <put-attribute name="title" value="Add new user" cascade="true"/>
+        <put-attribute name="submit-button" value="Register" cascade="true"/>
+        <put-attribute name="body" value="/WEB-INF/tiles/userAdd.jsp"/>
+    </definition>
+
+    <definition name="groups/add" extends="template">
+        <put-attribute name="title" value="Add new group" cascade="true"/>
+        <put-attribute name="submit-button" value="Register" cascade="true"/>
+        <put-attribute name="body" value="/WEB-INF/tiles/groupAdd.jsp"/>
+    </definition>
+
+    <definition name="users/edit" extends="template">
+        <put-attribute name="title" value="Edit user" cascade="true"/>
+        <put-attribute name="submit-button" value="Edit" cascade="true"/>
+        <put-attribute name="body" value="/WEB-INF/tiles/userAdd.jsp"/>
+    </definition>
+
+    <definition name="groups/edit" extends="template">
+        <put-attribute name="title" value="Edit group" cascade="true"/>
+        <put-attribute name="submit-button" value="Edit" cascade="true"/>
+        <put-attribute name="body" value="/WEB-INF/tiles/groupAdd.jsp"/>
+    </definition>
+
+</tiles-definitions>

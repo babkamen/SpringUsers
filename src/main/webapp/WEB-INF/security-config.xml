@@ -1,26 +1,46 @@
-<beans:beans xmlns="http://www.springframework.org/schema/security"
-             xmlns:beans="http://www.springframework.org/schema/beans"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://www.springframework.org/schema/beans
-	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-	http://www.springframework.org/schema/security
-	http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <security:debug />
 
-    <http auto-config="true">
-        <intercept-url pattern="/users*" access="ROLE_ADMIN" />
-        <intercept-url pattern="/groups*" access="ROLE_USER" />
+    <security:global-method-security jsr250-annotations="enabled" pre-post-annotations="enabled" secured-annotations="enabled" />
 
-    </http>
+    <security:http use-expressions="true">
+        <security:intercept-url pattern="/" access="permitAll" />
 
-    <authentication-manager>
-        <authentication-provider>
-            <password-encoder hash="sha-256"></password-encoder>
-            <user-service>
-                <user name="user" password="c88cf9468f1701ff059abe2c172a0da5edd6af83ae80ca1a7579e291c38df6d9" authorities="ROLE_USER" />
-                <user name="admin" password="c88cf9468f1701ff059abe2c172a0da5edd6af83ae80ca1a7579e291c38df6d9" authorities="ROLE_ADMIN,ROLE_USER" />
+        <security:intercept-url pattern="/users*" access="hasRole('admin')" />
+        <security:intercept-url pattern="/groups*" access="hasRole('user')" />
 
-            </user-service>
-        </authentication-provider>
-    </authentication-manager>
+        <security:intercept-url pattern="/resources" access="permitAll" />
 
-</beans:beans>
+        <security:form-login />
+        <security:logout logout-success-url="/" delete-cookies="JSESSIONID"/>
+        <security:remember-me />
+        <security:session-management invalid-session-url="/">
+            <security:concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
+        </security:session-management>
+    </security:http>
+
+    <bean id="encoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder"/>
+
+    <security:authentication-manager>
+        <security:authentication-provider>
+            <security:password-encoder ref="encoder"/>
+            <security:user-service>
+                <!-- Password: "koala" for both -->
+                <security:user name="user"
+                               password="4efe081594ce25ee4efd9f7067f7f678a347bccf2de201f3adf2a3eb544850b465b4e51cdc3fcdde"
+                               authorities="user"/>
+                <security:user name="admin"
+                               password="4efe081594ce25ee4efd9f7067f7f678a347bccf2de201f3adf2a3eb544850b465b4e51cdc3fcdde"
+                               authorities="admin,user"/>
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+
+</beans>

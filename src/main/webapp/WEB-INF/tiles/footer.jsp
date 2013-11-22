@@ -1,0 +1,1 @@
+Copyright:Geymerje.com 1992

@@ -1,10 +1,8 @@
 package org.geymer.users.entity;
 
-import org.geymer.users.entity.User;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -24,8 +22,9 @@ public class UserGroup {
     @NotEmpty(message = "This field is required")
     @javax.persistence.Column(name = "title")
     private String title;
+    @Lob
     @javax.persistence.Column(name = "logo")
-    private String logo;
+    private byte[] logo;
     @NotEmpty(message = "This field is required")
     @javax.persistence.Column(name = "about")
     private String about;
@@ -47,13 +46,6 @@ public class UserGroup {
         this.title = title;
     }
 
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
-    }
 
     public String getAbout() {
         return about;
@@ -72,5 +64,13 @@ public class UserGroup {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public byte[] getLogo() {
+        return logo;
+    }
+
+    public void setLogo(byte[] logo) {
+        this.logo = logo;
     }
 }

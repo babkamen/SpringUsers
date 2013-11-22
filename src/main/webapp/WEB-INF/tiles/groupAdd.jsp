@@ -1,21 +1,10 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: babkamen
-  Date: 14.11.13
---%>
-<!DOCTYPE html>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css">
-</head>
-<body>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <div class="page-header">
-    <h2 class="text-center">${title}</h2>
+    <h2 class="text-center"><tiles:getAsString ignore="true" name="title"/></h2>
 </div>
-<form:form methodParam="post" commandName="userGroup" cssClass="form-horizontal">
+<form:form methodParam="post" commandName="userGroup" cssClass="form-horizontal" enctype="multipart/form-data" >
     <form:hidden path="id"  />
     <div class="control-group">
        <form:label path="title" for="title" cssClass="control-label">Title</form:label>
@@ -25,6 +14,15 @@
         </div>
 
     </div>
+    <div class="control-group">
+        <label path="logo" for="logo" class="control-label">Title</label>
+        <div class="controls">
+            <input  type="file" accept="image/*" name="logo" id="logo" />
+        </div>
+
+    </div>
+
+
     <div class="control-group">
         <form:label for="about"  path="about" cssClass="control-label">About</form:label>
         <div class="controls">
@@ -53,9 +51,7 @@
 
 
     <div class="controls">
-        <button type="submit" class="btn btn-primary  btn-large">${submitButton}</button>
+        <button type="submit" class="btn btn-primary  btn-large"><tiles:getAsString name="submit-button" ignore="true"/></button>
     </div>
 
 </form:form>
-</body>
-</html>

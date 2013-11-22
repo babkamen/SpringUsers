@@ -11,9 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -42,17 +40,15 @@ public class UserController {
     @RequestMapping(value = "/add",method = RequestMethod.GET)
     public String addUser(Model model) {
         model.addAttribute("user",new User());
-       prepareModel(model,"add");
         model.addAttribute("groups",userGroupService.findAll());
-        return "userAdd";
+        return "users/add";
     }
     @RequestMapping(value = "/add",method = RequestMethod.POST)
     public String add(@Valid @ModelAttribute("user") User user,BindingResult result,HttpServletRequest request,Model model) {
 
         if(result.hasErrors()){
-            prepareModel(model,"add");
             model.addAttribute("groups",userGroupService.findAll());
-            return "userAdd";
+            return "users/add";
         }
         String groupId=request.getParameter("group");
          if(groupId!=null&&!groupId.equals("-1")){
@@ -84,24 +80,25 @@ public class UserController {
         }
 
         model.addAttribute("user",userService.findOne(Integer.parseInt(id)));
-        prepareModel(model,"add");
         model.addAttribute("groups",userGroupService.findAll());
 
-        return "userAdd";
+        return "users/edit";
+    }
+    @RequestMapping(value = "/edit",method = RequestMethod.POST)
+    public String edit(@Valid @ModelAttribute("user") User user,BindingResult result,HttpServletRequest request,Model model) {
+
+        if(result.hasErrors()){
+            model.addAttribute("groups",userGroupService.findAll());
+            return "users/edit";
+        }
+        String groupId=request.getParameter("group");
+        if(groupId!=null&&!groupId.equals("-1")){
+            user.setUserGroup(userGroupService.findOne(Integer.parseInt(groupId)));
+        }
+        userService.save(user);
+        return "redirect:/users";
     }
 
-    private void prepareModel(Model model,String pageName) {
-        if(pageName.equals("add")){
-            model.addAttribute("submitButton","Register");
-            model.addAttribute("title","Add new group");
-        }
-        if(pageName.equals("edit")){
-
-            model.addAttribute("submitButton","Edit");
-            model.addAttribute("title","Edit group");
-        }
-
-    }
 
 
 }

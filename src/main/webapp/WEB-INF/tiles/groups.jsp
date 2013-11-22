@@ -1,17 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="C" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page session="false"%>
-<!DOCTYPE html>
-<html>
 
-<head>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/bootstrap.min.css">
-<title>Hi ,admin</title>
-</head>
-<div class="page-header">
-<h2 class="text-center">User Groups</h2>
-</div>
-<body>
 <div class="container">
     <div class="search">
     <form class="form-search"  action="/groups/search" method="get">
@@ -21,6 +10,11 @@
         </div>
         </form>
     </div>
+    <c:if test="${idError!=null}">
+        <div class="alert alert-error">
+            <h4 class="text-center">No element is chosen!</h4>
+        </div>
+    </c:if>
     <table class="table table-striped table-bordered ">
         <form method="get" action="${pageContext.request.contextPath}/groups/edit" onsubmit="checkValues()">
 
@@ -42,10 +36,10 @@
                     <td>
                     <c:choose>
                         <c:when test="${group.logo!=null}">
-                        ${group.logo}
+                        <img src="<c:url value="/groups/getlogo/${group.id}"/>"/>
                         </c:when>
                                      <c:otherwise>
-                         <img src="/resources/img/no_logo.jpg"/>
+                         <img src="<c:url value="/resources/img/no_logo.jpg"/>"/>
                                      </c:otherwise>
                     </c:choose>
                     </td>
@@ -67,17 +61,9 @@
 		</c:forEach>
 </tbody>
 	</table>
-    <c:if test="${idError!=null}">
-        <div class="alert alert-error">
 
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>No element is chosen!</h4>
-        </div>
-    </c:if>
         <a href="${pageContext.request.contextPath}/groups/add" class="btn btn-primary">Add</a>
 <button class="btn btn-primary" >Edit</button>
    <button formaction="${pageContext.request.contextPath}/groups/delete" class="btn btn-primary" >Delete</button>
     </form>
 </div>
-</body>
-</html>
