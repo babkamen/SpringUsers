@@ -12,9 +12,10 @@ import java.util.List;
  * Time: 13:54
  * To change this template use File | Settings | File Templates.
  */
-public interface UserRepository extends JpaRepository<User,Integer>{
+public interface UserRepository extends JpaRepository<User, Integer> {
 
     List<User> findByUserGroupIdIsNull();
 
+    User findByName(String username);
 
 }

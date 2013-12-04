@@ -1,5 +1,7 @@
 package org.geymer.users.entity;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonManagedReference;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
@@ -13,7 +15,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Entity
-@Table(name="usergroup")
+@Table(name = "usergroup")
 public class UserGroup {
     @javax.persistence.Column(name = "id")
     @Id
@@ -22,14 +24,17 @@ public class UserGroup {
     @NotEmpty(message = "This field is required")
     @javax.persistence.Column(name = "title")
     private String title;
+
     @Lob
     @javax.persistence.Column(name = "logo")
     private byte[] logo;
     @NotEmpty(message = "This field is required")
     @javax.persistence.Column(name = "about")
     private String about;
-    @OneToMany(mappedBy = "userGroup",fetch = FetchType.EAGER)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "userGroup", fetch = FetchType.EAGER)
     private List<User> users;
+
     public int getId() {
         return id;
     }
@@ -61,15 +66,16 @@ public class UserGroup {
     }
 
 
-
     public void setUsers(List<User> users) {
         this.users = users;
     }
 
+    @JsonIgnore
     public byte[] getLogo() {
         return logo;
     }
 
+    @JsonIgnore
     public void setLogo(byte[] logo) {
         this.logo = logo;
     }

@@ -9,16 +9,16 @@
 
     <mvc:resources mapping="/resources/**" location="/resources/"/>
     <context:component-scan base-package="org.geymer.users"/>
-    <jpa:repositories base-package="org.geymer.users.dao" />
-    <context:property-placeholder location="/WEB-INF/jdbc.properties" />
+    <jpa:repositories base-package="org.geymer.users.dao"/>
+    <context:property-placeholder location="/WEB-INF/jdbc.properties"/>
     <mvc:annotation-driven/>
 
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
           destroy-method="close">
-        <property name="driverClassName" value="${jdbc.driverClassName}" />
-        <property name="url" value="${jdbc.url}" />
-        <property name="username" value="${jdbc.username}" />
-        <property name="password" value="${jdbc.password}" />
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
     </bean>
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="hibernatePersistenceUnit"/>
@@ -32,15 +32,15 @@
     </bean>
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactory" />
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <!-- one of the properties available; the maximum file size in bytes -->
-        <property name="maxUploadSize" value="20000"/>
+        <property name="maxUploadSize" value="50000"/>
     </bean>
 
 
     <!-- Activates annotation based transaction management -->
-    <tx:annotation-driven transaction-manager="transactionManager" />
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 </beans>

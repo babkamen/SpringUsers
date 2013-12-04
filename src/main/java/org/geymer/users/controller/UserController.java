@@ -1,19 +1,19 @@
 package org.geymer.users.controller;
 
+import org.apache.log4j.Logger;
 import org.geymer.users.entity.User;
 import org.geymer.users.service.UserGroupService;
 import org.geymer.users.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,6 +25,7 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+    private static final Logger logger = Logger.getLogger(UserController.class);
     @Autowired
     UserService userService;
     @Autowired
@@ -32,73 +33,84 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String Users(ModelMap model) {
-        model.addAttribute("users",userService.findAll());
+        logger.debug("userController");
+        model.addAttribute("users", userService.findAll());
         return "users";
     }
 
-
-    @RequestMapping(value = "/add",method = RequestMethod.GET)
+    @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String addUser(Model model) {
-        model.addAttribute("user",new User());
-        model.addAttribute("groups",userGroupService.findAll());
+        model.addAttribute("user", new User());
+        model.addAttribute("groups", userGroupService.findAll());
         return "users/add";
     }
-    @RequestMapping(value = "/add",method = RequestMethod.POST)
-    public String add(@Valid @ModelAttribute("user") User user,BindingResult result,HttpServletRequest request,Model model) {
 
-        if(result.hasErrors()){
-            model.addAttribute("groups",userGroupService.findAll());
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public String add(@Valid @ModelAttribute("user") User user, BindingResult result, @RequestParam(value = "group", required = false) Integer groupId, Model model) {
+
+        if (result.hasErrors()) {
+            model.addAttribute("groups", userGroupService.findAll());
             return "users/add";
         }
-        String groupId=request.getParameter("group");
-         if(groupId!=null&&!groupId.equals("-1")){
-             user.setUserGroup(userGroupService.findOne(Integer.parseInt(groupId)));
-         }
+        //TODO:replace request with @RequiredParam
+        if (groupId != null && groupId != -1) {
+            user.setUserGroup(userGroupService.findOne(groupId));
+        }
         userService.save(user);
+        User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = u.getName();
+        logger.info("User " + name + " added user " + user);
         return "redirect:/users";
     }
-
 
     @RequestMapping(value = "/delete")
-    public String addUser(HttpServletRequest request,Model model) {
-        String id;
-        if ((id = request.getParameter("id")) == null) {
-            model.addAttribute("idError","");
-                                            return "forward:/users/";
-        }
+    public String addUser(@RequestParam(value = "id", required = false) Integer id, Model model) {
 
-        userService.delete(Integer.parseInt(id));
+        if (id == null) {
+            model.addAttribute("idError", "");
+            return "forward:/users/";
+        }
+        User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = u.getName();
+        logger.info("User " + name + " added user " + userService.findOne(id));
+        userService.delete(id);
         return "redirect:/users";
     }
 
-    @RequestMapping(value = "/edit",method = RequestMethod.GET)
-    public String editUser(Model model,HttpServletRequest request) {
-        String id;
-        if ((id = request.getParameter("id")) == null) {
-            model.addAttribute("idError","");
+    @RequestMapping(value = "/edit", method = RequestMethod.GET)
+    public String editUser(Model model, @RequestParam(value = "id", required = false) Integer id) {
+
+        if (id == null) {
+            model.addAttribute("idError", "");
             return "forward:/users/";
         }
 
-        model.addAttribute("user",userService.findOne(Integer.parseInt(id)));
-        model.addAttribute("groups",userGroupService.findAll());
+        model.addAttribute("user", userService.findOne(id));
+        model.addAttribute("groups", userGroupService.findAll());
 
         return "users/edit";
     }
-    @RequestMapping(value = "/edit",method = RequestMethod.POST)
-    public String edit(@Valid @ModelAttribute("user") User user,BindingResult result,HttpServletRequest request,Model model) {
 
-        if(result.hasErrors()){
-            model.addAttribute("groups",userGroupService.findAll());
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
+    public String edit(@Valid @ModelAttribute("user") User user, BindingResult result,
+                       @RequestParam(value = "groupId", required = false) Integer groupId, Model model) {
+
+        if (result.hasErrors()) {
+            model.addAttribute("groups", userGroupService.findAll());
             return "users/edit";
         }
-        String groupId=request.getParameter("group");
-        if(groupId!=null&&!groupId.equals("-1")){
-            user.setUserGroup(userGroupService.findOne(Integer.parseInt(groupId)));
+        if (groupId != null && groupId != -1) {
+            user.setUserGroup(userGroupService.findOne(groupId));
         }
         userService.save(user);
         return "redirect:/users";
     }
 
+    @RequestMapping(value = "/json")
+    @ResponseBody
+    List<User> json() {
+        return userService.findAll();
+    }
 
 
 }

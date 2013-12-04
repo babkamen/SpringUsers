@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,7 +14,7 @@ import javax.persistence.*;
  * To change this template use File | Settings | File Templates.
  */
 @Entity
-@Table(name="user")
+@Table(name = "user")
 public class User {
     @javax.persistence.Column(name = "id")
     @GeneratedValue
@@ -35,11 +36,30 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userGroupId")
     private UserGroup userGroup;
-    @Column(name="userGroupId",insertable=false, updatable=false,nullable = true)
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Role> roles;
+
+    @Column(name = "userGroupId", insertable = false, updatable = false, nullable = true)
     Integer userGroupId;
 
     public Integer getUserGroupId() {
         return userGroupId;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", about='" + about + '\'' +
+                ", userGroup=" + userGroup +
+                ", roles=" + roles +
+                ", userGroupId=" + userGroupId +
+                '}';
     }
 
     public void setUserGroupId(Integer userGroupId) {
@@ -94,5 +114,13 @@ public class User {
 
     public void setUserGroup(UserGroup usergroup) {
         this.userGroup = usergroup;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

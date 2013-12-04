@@ -1,20 +1,28 @@
 <web-app version="2.4"
-	xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+         xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
 	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
-	<display-name>Spring MVC Application</display-name>
+    <display-name>Spring MVC Application</display-name>
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
 
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/error/404.jsp</location>
+    </error-page>
 
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-
+    <!--<listener>-->
+    <!--<listener-class>-->
+    <!--org.springframework.security.web.session.HttpSessionEventPublisher-->
+    <!--</listener-class>-->
+    <!--</listener>-->
 
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -22,7 +30,7 @@
 
 
     <servlet>
-		<servlet-name>mvc-dispatcher</servlet-name>
+        <servlet-name>mvc-dispatcher</servlet-name>
         <init-param>
             <param-name>contextConfigLocation
             </param-name>
@@ -32,14 +40,14 @@
                 /WEB-INF/view-config.xml
             </param-value>
         </init-param>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
-	</servlet>
+    </servlet>
 
-	<servlet-mapping>
-		<servlet-name>mvc-dispatcher</servlet-name>
-		<url-pattern>/</url-pattern>
-	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>mvc-dispatcher</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
@@ -49,7 +57,6 @@
             /WEB-INF/view-config.xml
         </param-value>
     </context-param>
-
 
 
 </web-app>
