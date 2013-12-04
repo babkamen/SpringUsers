@@ -1,4 +1,0 @@
-1.Error pages   +
-2.Login page +
-3.Spring security from db +
-4.Log4j configuration and
